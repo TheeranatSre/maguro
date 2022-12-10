@@ -1,13 +1,27 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using maguro.Models;
+using maguro.Repository.HealthCheck;
+using Microsoft.AspNetCore.Mvc;
 
-namespace maguro.Controllers.HealthCheckController
+namespace maguro.Controllers
 {
     public class HealthCheckController : Controller
     {
-        [HttpGet("healthcheck")]
-        public string HealthCheck()
+        private readonly IHealthCheckRepository _healthCheckRepository;
+
+        public HealthCheckController(IHealthCheckRepository healthCheckRepository)
         {
-            return "I'm fine, Thank you :)";
+            _healthCheckRepository = healthCheckRepository;
+        }
+
+        [HttpGet("healthcheck")]
+        public HealthCheckResponse HealthCheck()
+        {
+            HealthCheckResponse response = new HealthCheckResponse
+            {
+                status = _healthCheckRepository.getetMessageHealthCheck(),
+                version = "version 0.0.1"
+            };
+            return response;
         }
     }
 }
